@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduVision AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Helper to generate shade mapping for a specific variable name
+      const getColorShades = (varName) => ({
+        50: `rgb(var(--color-${varName}-50) / <alpha-value>)`,
+        100: `rgb(var(--color-${varName}-100) / <alpha-value>)`,
+        200: `rgb(var(--color-${varName}-200) / <alpha-value>)`,
+        300: `rgb(var(--color-${varName}-300) / <alpha-value>)`,
+        400: `rgb(var(--color-${varName}-400) / <alpha-value>)`,
+        500: `rgb(var(--color-${varName}-500) / <alpha-value>)`,
+        600: `rgb(var(--color-${varName}-600) / <alpha-value>)`,
+        700: `rgb(var(--color-${varName}-700) / <alpha-value>)`,
+        800: `rgb(var(--color-${varName}-800) / <alpha-value>)`,
+        900: `rgb(var(--color-${varName}-900) / <alpha-value>)`,
+        950: `rgb(var(--color-${varName}-950) / <alpha-value>)`,
+      });
+
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+              mono: ['"JetBrains Mono"', 'monospace'],
+            },
+            colors: {
+              // Map standard colors used in app to dynamic variables
+              // Primary = Indigo role
+              indigo: getColorShades('primary'),
+              primary: getColorShades('primary'),
+              
+              // Secondary = Purple role
+              purple: getColorShades('secondary'),
+              secondary: getColorShades('secondary'),
+
+              // Accent = Pink role
+              pink: getColorShades('accent'),
+              accent: getColorShades('accent'),
+
+              // Info/Tech = Cyan role (MathCam)
+              cyan: getColorShades('info'),
+              
+              // Map Emerald/Green to Success variable
+              emerald: getColorShades('success'),
+              green: getColorShades('success'),
+
+              // Custom dark backgrounds
+              dark: '#0B0F19', 
+              card: '#161b2c',
+            },
+            animation: {
+              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'float': 'float 6s ease-in-out infinite',
+              'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+              'slide-up': 'slideUp 0.4s ease-out forwards',
+              'scan': 'scan 2s linear infinite',
+              'shimmer': 'shimmer 2s infinite linear',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-10px)' },
+              },
+              fadeInUp: {
+                '0%': { opacity: '0', transform: 'translateY(10px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              slideUp: {
+                '0%': { opacity: '0', transform: 'translateY(20px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              scan: {
+                '0%': { top: '0%', opacity: '0' },
+                '10%': { opacity: '1' },
+                '90%': { opacity: '1' },
+                '100%': { top: '100%', opacity: '0' },
+              },
+              shimmer: {
+                '0%': { transform: 'translateX(-100%)' },
+                '100%': { transform: 'translateX(100%)' },
+              }
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      :root {
+        /* LIGHT MODE DEFAULTS */
+        --glass-border: rgba(0, 0, 0, 0.08);
+        --glass-bg: rgba(255, 255, 255, 0.75);
+        --glass-highlight: rgba(255, 255, 255, 0.9);
+        --text-primary: #1e293b;
+        --text-secondary: #475569;
+        --text-muted: #94a3b8;
+        
+        /* Default Theme (Nebula) Fallback values */
+        --color-primary-50: 238 242 255;
+        --color-primary-100: 224 231 255;
+        --color-primary-400: 129 140 248;
+        --color-primary-500: 99 102 241;
+        --color-primary-600: 79 70 229;
+        
+        --color-secondary-400: 192 132 252;
+        --color-secondary-500: 168 85 247;
+        
+        --color-accent-400: 244 114 182;
+        --color-accent-500: 236 72 153;
+
+        --color-info-400: 34 211 238;
+        --color-info-500: 6 182 212;
+      }
+      
+      .dark {
+        /* DARK MODE OVERRIDES */
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --glass-bg: rgba(30, 41, 59, 0.4);
+        --glass-highlight: rgba(255, 255, 255, 0.03);
+        --text-primary: rgba(255, 255, 255, 0.9);
+        --text-secondary: rgba(255, 255, 255, 0.6);
+        --text-muted: rgba(255, 255, 255, 0.4);
+      }
+      
+      body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: #f8fafc; /* Default Light BG */
+        color: var(--text-primary);
+        overflow-x: hidden;
+      }
+      
+      .dark body {
+        background-color: #0B0F19; /* Default Dark BG */
+      }
+
+      /* Noise Texture Overlay */
+      .bg-noise {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 50;
+        opacity: 0.03;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      /* Premium Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(100, 116, 139, 0.3); 
+        border-radius: 10px;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: rgba(100, 116, 139, 0.5);
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(148, 163, 184, 0.8); 
+      }
+
+      /* Glassmorphism Utilities */
+      .glass-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+      }
+      .dark .glass-card {
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      }
+      
+      .glass-panel {
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+      }
+      .dark .glass-panel {
+        background: rgba(17, 24, 39, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .text-gradient {
+        background: linear-gradient(135deg, rgb(var(--color-primary-500)) 0%, rgb(var(--color-secondary-500)) 50%, rgb(var(--color-accent-500)) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .dark .text-gradient {
+        background: linear-gradient(135deg, rgb(var(--color-primary-400)) 0%, rgb(var(--color-secondary-400)) 50%, rgb(var(--color-accent-400)) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .animate-float {
+        animation: float 6s ease-in-out infinite;
+      }
+      
+      .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+      }
+      .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+      }
+
+      /* Markdown Content Styling */
+      .markdown-body {
+        font-size: 0.95rem;
+        line-height: 1.7;
+        color: var(--text-primary);
+      }
+      .markdown-body h1, .markdown-body h2, .markdown-body h3 {
+        font-weight: 700;
+        margin-top: 1.5em;
+        margin-bottom: 0.75em;
+        line-height: 1.3;
+        color: var(--text-primary);
+      }
+      .markdown-body h1 { font-size: 1.5em; }
+      .markdown-body h2 { font-size: 1.25em; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.3em; }
+      .markdown-body h3 { font-size: 1.1em; }
+      .markdown-body p { margin-bottom: 1em; }
+      .markdown-body ul, .markdown-body ol { margin-bottom: 1em; padding-left: 1.5em; }
+      .markdown-body ul { list-style-type: disc; }
+      .markdown-body ol { list-style-type: decimal; }
+      .markdown-body li { margin-bottom: 0.25em; color: var(--text-secondary); }
+      .markdown-body blockquote {
+        border-left: 3px solid rgb(var(--color-primary-500));
+        padding-left: 1em;
+        color: var(--text-secondary);
+        margin-bottom: 1em;
+        font-style: italic;
+        background: rgba(var(--color-primary-50), 0.5);
+        padding: 0.5em 0 0.5em 1em;
+        border-radius: 0 0.5em 0.5em 0;
+      }
+      .dark .markdown-body blockquote {
+         background: rgba(255,255,255,0.05);
+      }
+      .markdown-body pre {
+        background: #f1f5f9;
+        padding: 1em;
+        border-radius: 0.75em;
+        overflow-x: auto;
+        border: 1px solid var(--glass-border);
+        margin-bottom: 1em;
+        color: #334155;
+      }
+      .dark .markdown-body pre {
+        background: rgba(0,0,0,0.3);
+        color: #e2e8f0;
+      }
+      .markdown-body code {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85em;
+      }
+      .markdown-body :not(pre) > code {
+        background: rgba(var(--color-primary-50), 0.8);
+        padding: 0.2em 0.4em;
+        border-radius: 0.3em;
+        color: rgb(var(--color-primary-600));
+        font-weight: 600;
+      }
+      .dark .markdown-body :not(pre) > code {
+        background: rgba(255,255,255,0.1);
+        color: rgb(var(--color-accent-400));
+        font-weight: 400;
+      }
+      .markdown-body strong { font-weight: 700; color: rgb(var(--color-primary-600)); }
+      .dark .markdown-body strong { color: rgb(var(--color-primary-400)); }
+      
+      .markdown-body a { color: rgb(var(--color-info-500)); text-decoration: underline; }
+      .dark .markdown-body a { color: rgb(var(--color-info-400)); }
+      
+      /* KaTeX Adjustments */
+      .katex-display { margin: 1em 0; overflow-x: auto; overflow-y: hidden; }
+      .katex { font-size: 1.1em; color: var(--text-primary); }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "recharts": "https://aistudiocdn.com/recharts@^3.5.0",
+    "react-markdown": "https://esm.sh/react-markdown@9?bundle",
+    "remark-math": "https://esm.sh/remark-math@6?bundle",
+    "rehype-katex": "https://esm.sh/rehype-katex@7?bundle"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div class="bg-noise"></div>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

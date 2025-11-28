@@ -1,0 +1,8 @@
+{
+  "name": "EduVision AI",
+  "description": "Your All-In-One AI Exam Analyzer, Solver, Tutor, Camera Assistant & Worksheet Generator.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
